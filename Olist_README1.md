@@ -1,7 +1,7 @@
 # Brazilian E-Commerce (Olist) — SQL & Geo-Spatial Analysis
 
 ## Overview
-A SQL analysis of the Olist Brazilian e-commerce public dataset, focused on order fulfillment, delivery performance, payments, and product category revenue. The project emphasizes multi-table joins, correlated subqueries, and window functions on real transactional data — a deliberate step up in scope and dataset complexity from an earlier HR-focused SQL project. The analysis was later extended into a geo-spatial phase: real-world distance calculation (Haversine formula), a two-page interactive Power BI dashboard, and a test of whether shipping distance actually affects delivery delay.
+A SQL analysis of the Olist Brazilian e-commerce public dataset, focused on order fulfillment, delivery performance, payments, and product category revenue. The project emphasizes multi-table joins, correlated subqueries, and window functions on real transactional data — a deliberate step up in scope and dataset complexity from an earlier HR-focused SQL project. The analysis was later extended into two advanced phases: a geo-spatial analysis of shipping distance vs. delivery delay, and an executive time-series forecasting module leveraging Facebook Prophet and Power BI.
 
 ## Data Source
 The Olist Brazilian E-Commerce Public Dataset (Kaggle), covering ~99,441 orders. Eight of the nine available tables were used:
@@ -20,9 +20,10 @@ The Olist Brazilian E-Commerce Public Dataset (Kaggle), covering ~99,441 orders.
 **Initially excluded, later revisited:** `olist_geolocation_dataset` (~1,000,163 rows of zip-code coordinates) was left out of the initial SQL phase, since meaningful use of geographic data requires distance calculations and map-based visualization beyond standard SQL analysis. It was brought back in for the Geo-Spatial Extension described below.
 
 ## Tools
-- **DB Browser for SQLite** — database creation, CSV import, query execution
+- **DB Browser for SQLite & SQLite3** — database management, CSV import, query execution, and dedicated forecast schema storage
 - **SQL** — data validation, joins, correlated subqueries, window functions, date functions, the Haversine formula
-- **Power BI Desktop** — connected to the SQLite database via an ODBC driver, DAX measures, interactive map visuals
+- **Python (Facebook Prophet & Pandas)** — time-series trend decomposition, confidence interval calculation, and automated ETL pipeline
+- **Power BI Desktop** — connected to SQLite databases via ODBC driver, DAX measures, interactive maps, and predictive line charts with confidence bands
 
 ## Methodology
 1. **Data Validation** — checked for duplicate keys and referential integrity between every related table pair (orders/customers, order_items/products), and audited missing values across all order lifecycle date columns.
@@ -31,6 +32,7 @@ The Olist Brazilian E-Commerce Public Dataset (Kaggle), covering ~99,441 orders.
 4. **Multi-Table Joins** — joined three tables (order items → products → category translation) to analyze revenue by product category.
 5. **Correlated Subqueries** — identified items priced above their own category's average, with the subquery re-evaluated per row rather than computed once.
 6. **Window Functions** — ranked products by price within each category using `RANK() OVER (PARTITION BY ...)`, wrapped in a derived table.
+7. **Predictive Analytics & Forecasting** — modeled historical order trends in Python using Facebook Prophet, exported structured projections (`yhat`, `yhat_lower`, `yhat_upper`) to `olist_forecast.db`, and designed an executive forecasting dashboard in Power BI utilizing explicit DAX measures.
 
 ## Key Insights
 - **Dataset design:** `olist_customers_dataset` is a transactional view, not a full user base — every customer row corresponds to exactly one order (99,441 = 99,441, confirmed by query). The same logic explains why every cataloged product has been sold at least once.
@@ -60,9 +62,47 @@ The analysis was extended using `olist_geolocation_dataset`, previously excluded
 
 See `Geo_Dashboard_Overview.pdf` and `Geo_Dashboard_Shipping.pdf` for static exports of both pages.
 
+## Predictive Analytics Extension: Time-Series Revenue Forecasting (Prophet + Power BI)
+To support executive-level financial planning, inventory management, and risk-adjusted revenue targets, a time-series revenue forecasting module was developed as an extension of the existing repository.
+
+**Pipeline & Modeling Architecture:**
+- **SQL Aggregation:** Extracted cleaned historical monthly revenues from `Olist_Ecommerce.db` (covering Jan 2017 – Aug 2018).
+- **Prophet Pipeline:** Applied Facebook Prophet in Python to fit historical revenue trends and generate a **6-month horizon forecast** (Sep 2018 – Feb 2019). Calculated predictive confidence intervals (`yhat_lower`, `yhat_upper`) at a 95% threshold.
+- **Database Storage:** Stored structured time-series predictions (26 monthly records: 20 historical + 6 projected) in a dedicated SQLite database (`olist_forecast.db`).
+
+**Executive Power BI Dashboard:**
+- Connected Power BI to `olist_forecast.db` via an ODBC DSN driver.
+- Formatted line visuals with solid trend lines for central estimates (`yhat`) and styled upper/lower uncertainty bounds (`yhat_lower`, `yhat_upper`) using dashed lines to clearly distinguish risk boundaries.
+- **DAX Integration:** Avoided misleading aggregations by writing explicit DAX measures:
+```dax
+Next Month Forecast = 
+CALCULATE(
+    SUM(sales_forecast[yhat]),
+    sales_forecast[ds] = DATE(2018, 9, 1)
+)
+
+Total 6M Forecast = 
+CALCULATE(
+    SUM(sales_forecast[yhat]),
+    sales_forecast[ds] >= DATE(2018, 9, 1)
+)
+
+```
+
+**Key Forecast Insights:**
+
+* **Next Month Projected Revenue (Sep 2018):** **$1.10M** (baseline model estimate post-historical period).
+* **Total Projected 6-Month Revenue (Sep 2018 – Feb 2019):** **$7.20M** projected total expansion across the 6-month forecast horizon.
+* **Risk Margin:** Upper confidence bounds average around **$929.34K** across historical/projected bounds, outlining clear volatility thresholds for financial planning.
+
 ## Files
-- `Olist_SQL_Queries.sql` — full annotated query log for the core analysis, in chronological order.
-- `Geo_Sales_Delivery_Queries.sql` — annotated query log for the geo-spatial extension (Haversine distance, KPI table, IsDelayed/DelayCategory).
+
+* `Olist_SQL_Queries.sql` — full annotated query log for the core analysis, in chronological order.
+* `Geo_Sales_Delivery_Queries.sql` — annotated query log for the geo-spatial extension (Haversine distance, KPI table, IsDelayed/DelayCategory).
+* `olist_forecasting.py` — Python script executing SQL extraction, Prophet forecasting, and SQLite database export.
+* `olist_forecast.db` — SQLite database storing output time-series records (`ds`, `yhat`, `yhat_lower`, `yhat_upper`).
+* `Olist_Revenue_Forecasting_Dashboard.pbix` — executive Power BI dashboard displaying forecasting trend lines, DAX-driven KPI cards, and temporal slicers.
 
 ## Author
+
 Fathallah Saied Abou Eid
