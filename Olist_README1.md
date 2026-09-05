@@ -94,6 +94,7 @@ CALCULATE(
 * **Next Month Projected Revenue (Sep 2018):** **$1.10M** (baseline model estimate post-historical period).
 * **Total Projected 6-Month Revenue (Sep 2018 – Feb 2019):** **$7.20M** projected total expansion across the 6-month forecast horizon.
 * **Risk Margin:** Upper confidence bounds average around **$929.34K** across historical/projected bounds, outlining clear volatility thresholds for financial planning.
+* **Model accuracy & limitations:** the model achieves a Mean Absolute Error (MAE) of $82,919.96 and a Mean Absolute Percentage Error (MAPE) of 17.57% on historical data — a reasonable result given only 20 months of training data. Yearly seasonality was deliberately disabled: with only one full year of history, the model could not reliably distinguish genuine annual patterns from one-off events, and enabling it produced unrealistic month-to-month swings. As a direct consequence, November 2017 (a Black Friday-driven spike) falls outside the model's confidence interval — a known limitation the model cannot resolve without at least two full years of historical data to learn a reliable seasonal pattern.
 
 ## Files
 
