@@ -2,14 +2,6 @@
 
 ---
 
-## 📊 Dashboards & Visualizations
-
-* **Geographic Sales & Shipping Analysis (Power BI):** Detailed performance report available in [Geo_Dashboard_Overview & Shipping.pdf](./Geo_Dashboard_Overview%20&%20Shipping.pdf).
-* **Revenue Forecasting Model (Python & Prophet):** Interactive overview of 6-month projected revenue trends.
-
-### 📈 Time-Series Forecasting Dashboard
-![Sales Forecasting Dashboard](olist_forecasting_dashboard.png)
-
 ## Overview
 A SQL analysis of the Olist Brazilian e-commerce public dataset, focused on order fulfillment, delivery performance, payments, and product category revenue. The project emphasizes multi-table joins, correlated subqueries, and window functions on real transactional data — a deliberate step up in scope and dataset complexity from an earlier HR-focused SQL project. The analysis was later extended into a geo-spatial phase: real-world distance calculation (Haversine formula), a two-page interactive Power BI dashboard, and a test of whether shipping distance actually affects delivery delay.
 
@@ -68,11 +60,20 @@ The analysis was extended using `olist_geolocation_dataset`, previously excluded
 - *Geographic Overview* — KPI cards (on-time rate, avg distance, avg freight), a map of customer locations, and a delay-colored map (Delayed / Early / On-Time categories)
 - *Shipping Cost & Distance Analysis* — a freight-cost-vs-distance scatter plot (colored by delay category) and a Top 10 Shipping Routes chart by order volume (SP → SP dominates, consistent with São Paulo's outsized role in Brazilian commerce)
 
-See `Geo_Dashboard_Overview.pdf` and `Geo_Dashboard_Shipping.pdf` for static exports of both pages.
+## 📊 Dashboards & Visualizations
+
+* **Geographic Sales & Shipping Analysis (Power BI):** Detailed performance report available in [Geo_Dashboard_Overview & Shipping.pdf](./Geo_Dashboard_Overview%20&%20Shipping.pdf).
+* **Revenue Forecasting Model (Python & Prophet):** Interactive overview of 6-month projected revenue trends.
+
+### 📈 Time-Series Forecasting Dashboard
+![Sales Forecasting Dashboard](olist_forecasting_dashboard.png)
 
 ## Files
 - `Olist_SQL_Queries.sql` — full annotated query log for the core analysis, in chronological order.
 - `Geo_Sales_Delivery_Queries.sql` — annotated query log for the geo-spatial extension (Haversine distance, KPI table, IsDelayed/DelayCategory).
+
+- `03_Sales_Forecasting_Prophet.ipynb` — Time-series forecasting model using Facebook Prophet.
+- `requirements.txt` — Python dependencies for reproducing the environment.
 
 ## Author
 Fathallah Saied Abou Eid
