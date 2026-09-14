@@ -1,5 +1,15 @@
 # Brazilian E-Commerce (Olist) — SQL & Geo-Spatial Analysis
 
+---
+
+## 📊 Dashboards & Visualizations
+
+* **Geographic Sales & Shipping Analysis (Power BI):** Detailed performance report available in `Geo_Dashboard_Overview & Shipping.pdf`.
+* **Revenue Forecasting Model (Python & Prophet):** Interactive overview of 6-month projected revenue trends.
+
+### 📈 Time-Series Forecasting Dashboard
+![Sales Forecasting Dashboard](olist_forecasting_dashboard.png)
+
 ## Overview
 A SQL analysis of the Olist Brazilian e-commerce public dataset, focused on order fulfillment, delivery performance, payments, and product category revenue. The project emphasizes multi-table joins, correlated subqueries, and window functions on real transactional data — a deliberate step up in scope and dataset complexity from an earlier HR-focused SQL project. The analysis was later extended into a geo-spatial phase: real-world distance calculation (Haversine formula), a two-page interactive Power BI dashboard, and a test of whether shipping distance actually affects delivery delay.
 
