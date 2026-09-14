@@ -4,7 +4,7 @@
 
 ## 📊 Dashboards & Visualizations
 
-* **Geographic Sales & Shipping Analysis (Power BI):** Detailed performance report available in `Geo_Dashboard_Overview & Shipping.pdf`.
+* **Geographic Sales & Shipping Analysis (Power BI):** Detailed performance report available in [Geo_Dashboard_Overview & Shipping.pdf](./Geo_Dashboard_Overview%20&%20Shipping.pdf).
 * **Revenue Forecasting Model (Python & Prophet):** Interactive overview of 6-month projected revenue trends.
 
 ### 📈 Time-Series Forecasting Dashboard
